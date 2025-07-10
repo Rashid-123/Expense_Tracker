@@ -8,6 +8,7 @@ import EditTransactionDialog from './EditTransactionDialog';
 import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import AddTransactionDialog from './AddTransactionDialog';
 import Loader from '@/components/Loader';
+import { showToast } from '@/lib/showToast';
 
 const TransactionList = () => {
     const [transactions, setTransactions] = useState([]);
@@ -61,7 +62,7 @@ const TransactionList = () => {
         setIsDeleteDialogOpen(true);
     };
 
-
+    // Fetch transactions 
     const fetchTransactions = async (page = 1, currentFilters = filters) => {
         setLoading(true);
         try {
@@ -122,9 +123,11 @@ const TransactionList = () => {
         fetchTransactions(currentPage, filters);
     };
 
+    // Handle transaction updates and deletions
     const handleUpdateTransaction = async (id, formData) => {
         try {
             const response = await axios.put(`api/transactions/${id}`, formData);
+            showToast('Transaction updated successfully!', 'success');
             setTransactions(prev =>
                 prev.map(t => t._id === id ? response.data.data : t)
             );
@@ -141,7 +144,7 @@ const TransactionList = () => {
                 prev.filter(t => t._id !== id)
             );
 
-
+            showToast('Transaction deleted successfully!', 'success');
             fetchTransactions(currentPage, filters);
         } catch (error) {
             console.error('Error deleting transaction:', error);

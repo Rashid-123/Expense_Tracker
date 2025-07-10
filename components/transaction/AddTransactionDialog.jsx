@@ -22,8 +22,9 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Plus, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { showToast } from '@/lib/showToast';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 
 const AddTransactionDialog = ({ onTransactionAdded, triggerClassName, triggerChildren, variant = "fab" }) => {
     const [open, setOpen] = useState(false);
@@ -101,6 +102,7 @@ const AddTransactionDialog = ({ onTransactionAdded, triggerClassName, triggerChi
         setSuccess('');
     };
 
+    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -134,7 +136,7 @@ const AddTransactionDialog = ({ onTransactionAdded, triggerClassName, triggerChi
                 setSuccess('Transaction added successfully!');
 
                 resetForm();
-
+                showToast('Transaction added successfully!', 'success');
                 setTimeout(() => {
                     setOpen(false);
                     setSuccess('');

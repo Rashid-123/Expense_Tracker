@@ -2,13 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
-import { Card, CardContent } from '@/components/ui/card';
 import axios from 'axios';
-
-
-
-
-
+import { Card, CardContent } from '@/components/ui/card';
 
 const ExpensePieChart = () => {
     const [data, setData] = useState([]);

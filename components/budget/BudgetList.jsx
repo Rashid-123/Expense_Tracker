@@ -1,4 +1,4 @@
-
+"use client";
 import React, { useState, useEffect } from 'react';
 import { Calendar, Plus } from 'lucide-react';
 import BudgetCard from './BudgetCard';
@@ -14,6 +14,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { showToast } from '@/lib/showToast';
 
 
 const BudgetList = ({ onBudgetChange }) => {
@@ -87,7 +88,7 @@ const BudgetList = ({ onBudgetChange }) => {
             const data = await response.json();
 
             if (data.success) {
-
+                showToast('Budget added successfully!', 'success');
                 await fetchBudgets();
                 if (onBudgetChange) onBudgetChange();
             } else {
@@ -113,6 +114,7 @@ const BudgetList = ({ onBudgetChange }) => {
             const data = await response.json();
 
             if (data.success) {
+                showToast('Budget updated successfully!', 'success');
                 setBudgets(prev =>
                     prev.map(budget =>
                         budget._id === budgetId ? data.data : budget
@@ -138,6 +140,7 @@ const BudgetList = ({ onBudgetChange }) => {
             const data = await response.json();
 
             if (data.success) {
+                showToast('Budget deleted successfully!', 'success');
                 setBudgets(prev => prev.filter(budget => budget._id !== budgetId));
                 if (onBudgetChange) onBudgetChange();
             } else {
