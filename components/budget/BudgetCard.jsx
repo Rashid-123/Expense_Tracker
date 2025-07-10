@@ -22,7 +22,7 @@ const BudgetCard = ({ budget, onEdit, onDelete }) => {
         }).format(amount);
     };
     return (
-        <div className="bg-white rounded-sm shadow-xs p-6 border border-gray-200 hover:shadow-sm transition-shadow">
+        <div className={`border-l-4  rounded-l-md bg-white p-6 border border-gray-200 hover:shadow-sm transition-shadow`} style={{ borderLeftColor: categoryColor }}>
             <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center">
                     <div

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Budget from '@/models/Budget';
 
-// GET - Fetch all budgets with optional filters
+// -------------------------------  Fetch all budgets with optional filters -------------------------------
 export async function GET(request) {
   try {
     await connectDB();
@@ -27,7 +27,7 @@ export async function GET(request) {
       query.category = category;
     }
     
-    // If no month/year specified, get current month/year
+    
     if (!month && !year) {
       const now = new Date();
       query.month = now.getMonth() + 1;
@@ -52,7 +52,7 @@ export async function GET(request) {
   }
 }
 
-// POST - Create new budget
+//  ----------------------------------------- Create new budget-----------------------------------------
 export async function POST(request) {
   try {
     await connectDB();
@@ -60,7 +60,7 @@ export async function POST(request) {
     const body = await request.json();
     const { category, amount, month, year } = body;
     
-    // Validation
+    
     if (!category || !amount || !month || !year) {
       return NextResponse.json(
         { success: false, error: 'All fields are required' },

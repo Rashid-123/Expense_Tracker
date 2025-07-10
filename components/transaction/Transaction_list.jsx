@@ -1,15 +1,15 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
+import { Label } from "@/components/ui/label";
 import TransactionItem from './TransactionItem';
 import EditTransactionDialog from './EditTransactionDialog';
 import DeleteConfirmationDialog from './DeleteConfirmationDialog';
+import AddTransactionDialog from './AddTransactionDialog';
+import Loader from '@/components/Loader';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-// Main Transaction List Component
-const TransactionList = ({ refreshFlag, onDeleteTransaction }) => {
+const TransactionList = () => {
     const [transactions, setTransactions] = useState([]);
     const [editingTransaction, setEditingTransaction] = useState(null);
     const [deletingTransaction, setDeletingTransaction] = useState(null);
@@ -31,7 +31,8 @@ const TransactionList = ({ refreshFlag, onDeleteTransaction }) => {
         limit: 6
     });
 
-    // Common categories (you can adjust these based on your app)
+
+
     const categories = [
         { value: 'all', label: 'All Categories' },
         { value: 'food', label: 'Food' },
@@ -77,7 +78,7 @@ const TransactionList = ({ refreshFlag, onDeleteTransaction }) => {
                 params.append('type', currentFilters.type);
             }
 
-            const response = await axios.get(`${API_URL}/transactions?${params}`);
+            const response = await axios.get(`api/transactions?${params}`);
 
             // Access transactions and pagination data
             const { transactions, pagination } = response.data.data;
@@ -97,28 +98,33 @@ const TransactionList = ({ refreshFlag, onDeleteTransaction }) => {
         }
     };
 
-    // Initial fetch
+
     useEffect(() => {
         fetchTransactions(1, filters);
-    }, [refreshFlag]);
+    }, []);
 
-    // Handle filter changes
+
     const handleFilterChange = (filterType, value) => {
         const newFilters = { ...filters, [filterType]: value };
         setFilters(newFilters);
-        setCurrentPage(1); // Reset to first page when filters change
+        setCurrentPage(1);
         fetchTransactions(1, newFilters);
     };
 
-    // Handle page changes
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
         fetchTransactions(page, filters);
     };
 
+
+    const handleTransactionAdded = async () => {
+        fetchTransactions(currentPage, filters);
+    };
+
     const handleUpdateTransaction = async (id, formData) => {
         try {
-            const response = await axios.put(`${API_URL}/transactions/${id}`, formData);
+            const response = await axios.put(`api/transactions/${id}`, formData);
             setTransactions(prev =>
                 prev.map(t => t._id === id ? response.data.data : t)
             );
@@ -130,12 +136,12 @@ const TransactionList = ({ refreshFlag, onDeleteTransaction }) => {
     const handleDeleteTransaction = async (id) => {
         try {
             console.log(id);
-            const response = await axios.delete(`${API_URL}/transactions/${id}`);
+            const response = await axios.delete(`api/transactions/${id}`);
             setTransactions(prev =>
                 prev.filter(t => t._id !== id)
             );
 
-            onDeleteTransaction(); // Notify parent component about deletion
+
             fetchTransactions(currentPage, filters);
         } catch (error) {
             console.error('Error deleting transaction:', error);
@@ -162,65 +168,74 @@ const TransactionList = ({ refreshFlag, onDeleteTransaction }) => {
     };
 
     return (
-        <div className="mx-auto p-6">
+        <div className="mx-auto">
             <div className="mb-6">
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">Transactions</h1>
                 <p className="text-gray-600">Manage your income and expenses</p>
             </div>
 
-            {/* Filters */}
-            <div className="mb-6 bg-white p-4 rounded-lg shadow-sm border">
+
+            <div className="mb-6 bg-white p-4 rounded-md shadow-xs border">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Category Filter */}
+
+
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label htmlFor="category" className="mb-2 block text-sm font-medium">
                             Category
-                        </label>
-                        <select
+                        </Label>
+                        <Select
                             value={filters.category}
-                            onChange={(e) => handleFilterChange('category', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            onValueChange={(value) => handleFilterChange("category", value)}
                         >
-                            {categories.map(cat => (
-                                <option key={cat.value} value={cat.value}>
-                                    {cat.label}
-                                </option>
-                            ))}
-                        </select>
+                            <SelectTrigger id="category" className="w-full">
+                                <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {categories.map((cat) => (
+                                    <SelectItem key={cat.value} value={cat.value}>
+                                        {cat.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     {/* Type Filter */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label htmlFor="type" className="mb-2 block text-sm font-medium">
                             Type
-                        </label>
-                        <select
+                        </Label>
+                        <Select
                             value={filters.type}
-                            onChange={(e) => handleFilterChange('type', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            onValueChange={(value) => handleFilterChange("type", value)}
                         >
-                            {types.map(type => (
-                                <option key={type.value} value={type.value}>
-                                    {type.label}
-                                </option>
-                            ))}
-                        </select>
+                            <SelectTrigger id="type" className="w-full">
+                                <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {types.map((type) => (
+                                    <SelectItem key={type.value} value={type.value}>
+                                        {type.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
             </div>
 
-            {/* Results Info */}
+
             <div className="mb-4 flex justify-between items-center">
-                <p className="text-sm text-gray-600">
+                {!loading && <p className="text-sm text-gray-600">
                     Showing {transactions.length} of {totalTransactions} transactions
-                </p>
-                {loading && (
+                </p>}
+                {/* {loading && (
                     <div className="text-sm text-blue-600">Loading...</div>
-                )}
+                )} */}
             </div>
 
-            {/* Transaction List */}
-            <div className="space-y-3">
+
+            {loading ? <Loader /> : <div className="space-y-3">
                 {transactions?.map((transaction) => (
                     <TransactionItem
                         key={transaction._id}
@@ -229,20 +244,20 @@ const TransactionList = ({ refreshFlag, onDeleteTransaction }) => {
                         onDelete={handleDelete}
                     />
                 ))}
-            </div>
+            </div>}
 
-            {/* Empty State */}
+
             {transactions?.length === 0 && !loading && (
                 <div className="text-center py-12">
                     <p className="text-gray-500">No transactions found</p>
                 </div>
             )}
 
-            {/* Pagination */}
+
             {totalPages > 1 && (
                 <div className="mt-6 flex justify-center">
                     <nav className="flex items-center space-x-2">
-                        {/* Previous Button */}
+
                         <button
                             onClick={() => handlePageChange(currentPage - 1)}
                             disabled={!hasPrevPage}
@@ -251,7 +266,7 @@ const TransactionList = ({ refreshFlag, onDeleteTransaction }) => {
                             Previous
                         </button>
 
-                        {/* Page Numbers */}
+
                         {getPageNumbers().map((page) => (
                             <button
                                 key={page}
@@ -265,7 +280,7 @@ const TransactionList = ({ refreshFlag, onDeleteTransaction }) => {
                             </button>
                         ))}
 
-                        {/* Next Button */}
+
                         <button
                             onClick={() => handlePageChange(currentPage + 1)}
                             disabled={!hasNextPage}
@@ -277,7 +292,7 @@ const TransactionList = ({ refreshFlag, onDeleteTransaction }) => {
                 </div>
             )}
 
-            {/* Edit Dialog */}
+            {/* edit dialog */}
             <EditTransactionDialog
                 isOpen={isEditDialogOpen}
                 onClose={() => {
@@ -298,6 +313,8 @@ const TransactionList = ({ refreshFlag, onDeleteTransaction }) => {
                 transaction={deletingTransaction}
                 onConfirm={handleDeleteTransaction}
             />
+            {/* Add transaction dialog  */}
+            <AddTransactionDialog onTransactionAdded={handleTransactionAdded} />
         </div>
     );
 };

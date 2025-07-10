@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { X, DollarSign, Tag, Calendar, } from 'lucide-react';
+import { DollarSign, Tag, Calendar, } from 'lucide-react';
 
 const AddBudgetDialog = ({ isOpen, onClose, onAdd, selectedMonth, selectedYear }) => {
     const [formData, setFormData] = useState({
@@ -16,7 +16,7 @@ const AddBudgetDialog = ({ isOpen, onClose, onAdd, selectedMonth, selectedYear }
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // Budget categories
+
     const categories = [
         'food',
         'transportation',
@@ -53,7 +53,7 @@ const AddBudgetDialog = ({ isOpen, onClose, onAdd, selectedMonth, selectedYear }
         }).format(amount);
     };
 
-    // Generate year options
+
     const generateYearOptions = () => {
         return [2025, 2026];
     };
@@ -105,7 +105,7 @@ const AddBudgetDialog = ({ isOpen, onClose, onAdd, selectedMonth, selectedYear }
             await onAdd(budgetData);
             handleClose();
         } catch (err) {
-            // Handle specific error messages from backend
+
             if (err.message) {
                 setError(err.message);
             } else {

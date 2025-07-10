@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Transaction from '@/models/Transaction';
 
+// ---------------------------  Fetch monthly expenses analytics -------------------------------
 export async function GET(request) {
-  try {
+  try { 
     await connectDB();
     
     const { searchParams } = new URL(request.url);
@@ -36,7 +37,7 @@ export async function GET(request) {
       }
     ]);
     
-    // Create array for all 12 months
+   
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'

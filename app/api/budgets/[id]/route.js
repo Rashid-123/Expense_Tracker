@@ -3,7 +3,7 @@ import connectDB from '@/lib/mongodb';
 import Budget from '@/models/Budget';
 import mongoose from 'mongoose';
 
-// GET - Fetch single budget
+// ---------------------------------------  Fetch single budget -------------------------------------
 export async function GET(request, { params }) {
   try {
     await connectDB();
@@ -40,7 +40,7 @@ export async function GET(request, { params }) {
   }
 }
 
-// PUT - Update budget
+// ------------------------------------- Update budget -------------------------------------
 export async function PUT(request, { params }) {
   try {
     await connectDB();
@@ -56,7 +56,7 @@ export async function PUT(request, { params }) {
       );
     }
     
-    // Validation
+    
     if (!category || !amount || !month || !year) {
       return NextResponse.json(
         { success: false, error: 'All fields are required' },
@@ -126,7 +126,7 @@ export async function PUT(request, { params }) {
   }
 }
 
-// DELETE - Delete budget
+// --------------------------------------------- Delete budget -------------------------------------
 export async function DELETE(request, { params }) {
   try {
     await connectDB();

@@ -38,30 +38,30 @@ export default function Sidebar() {
 
     return (
         <>
-            {/* Hamburger button for mobile/tablet */}
+
             <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden fixed top-4 left-4 z-50 bg-white shadow-md border border-gray-200"
+                className="lg:hidden fixed top-4 left-4 z-60 bg-white shadow-xs border border-gray-200"
                 onClick={toggleSidebar}
             >
                 {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
 
-            {/* Overlay for mobile */}
+
             {isOpen && (
                 <div
-                    className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+                    className="lg:hidden fixed inset-0 bg-transparent bg-opacity-50 z-40"
                     onClick={closeSidebar}
                 />
             )}
 
-            {/* Sidebar */}
+
             <div
                 className={`
-                    w-64 bg-white border-r border-gray-200 h-screen fixed left-0 top-0 z-40 transform transition-transform duration-300 ease-in-out
-                    lg:translate-x-0 lg:static lg:z-auto
-                    ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+                    w-64 bg-white border-r border-gray-200 h-screen fixed left-0 top-0 transform transition-transform duration-300 ease-in-out
+                    ${isOpen ? 'translate-x-0 z-50' : '-translate-x-full z-30'}
+                    lg:translate-x-0 lg:z-30
                 `}
             >
                 <div className="p-6">
@@ -83,7 +83,7 @@ export default function Sidebar() {
                                         : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                                         }`}
                                     asChild
-                                    onClick={closeSidebar} // Close sidebar on mobile when clicking nav item
+                                    onClick={closeSidebar}
                                 >
                                     <Link href={item.href}>
                                         <Icon className="mr-3 h-4 w-4" />

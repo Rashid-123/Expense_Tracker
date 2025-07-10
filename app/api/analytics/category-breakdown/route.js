@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Transaction from '@/models/Transaction';
-
+ // ---------------------------  Fetch category breakdown analytics -------------------------------
 export async function GET(request) {
   try {
     await connectDB();

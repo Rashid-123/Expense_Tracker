@@ -3,7 +3,7 @@ import connectDB from '@/lib/mongodb';
 import Transaction from '@/models/Transaction';
 import mongoose from 'mongoose';
 
-// GET - Fetch single transaction
+// ------------------------------------  single transaction -------------------------------------
 export async function GET(request, { params }) {
   try {
     await connectDB();
@@ -40,7 +40,7 @@ export async function GET(request, { params }) {
   }
 }
 
-// PUT - Update transaction
+// -------------------------------- Update transaction -------------------------------------
 export async function PUT(request, { params }) {
   try {
     await connectDB();
@@ -56,7 +56,7 @@ export async function PUT(request, { params }) {
       );
     }
     
-    // Validation
+    
     if (!amount || !date || !description || !category || !type) {
       return NextResponse.json(
         { success: false, error: 'All fields are required' },
@@ -113,14 +113,14 @@ export async function PUT(request, { params }) {
   }
 }
 
-// DELETE - Delete transaction
+// ------------------------------------ Delete transaction -------------------------------------
 export async function DELETE(request) {
   try {
     await connectDB();
 
     // Extract ID from the URL
     const url = new URL(request.url);
-    const id = url.pathname.split('/').pop(); // gets the last segment of the path
+    const id = url.pathname.split('/').pop();
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(

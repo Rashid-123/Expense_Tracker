@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Transaction from '@/models/Transaction';
 
-// GET - Fetch all transactions with optional filters
+// ------------------------------ Fetch all transactions with optional filters ---------------------------
 export async function GET(request) {
   try {
     await connectDB();
@@ -47,7 +47,7 @@ export async function GET(request) {
       .limit(limit)
       .lean();
    
-    // Get total count for pagination
+  
     const totalTransactions = await Transaction.countDocuments(query);
     const totalPages = Math.ceil(totalTransactions / limit);
     
@@ -74,7 +74,7 @@ export async function GET(request) {
   }
 }
 
-// POST - Create new transaction
+//  ---------------------------------- Create new transaction ----------------------------------------
 export async function POST(request) {
   try {
     await connectDB();

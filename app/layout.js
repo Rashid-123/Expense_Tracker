@@ -23,14 +23,12 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
       >
-        <div className="flex">
-          <Sidebar />
-          <main className="flex-1 min-h-screen">
-            <div className="p-8 pt-16 lg:pt-8">
-              {children}
-            </div>
-          </main>
-        </div>
+        <Sidebar />
+        <main className="min-h-screen lg:ml-64">
+          <div className="px-4 md:px-8 py-16 lg:py-8">
+            {children}
+          </div>
+        </main>
       </body>
     </html>
   );

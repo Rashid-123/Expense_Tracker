@@ -5,12 +5,16 @@ import BudgetCard from './BudgetCard';
 import UpdateBudgetDialog from './UpdateBudgetDialog';
 import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import AddBudgetDialog from './AddBudgetDialog';
+import Loader from '../Loader';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
-const LoadingSpinner = () => (
-    <div className="flex justify-center items-center py-8 min-h-[500px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-    </div>
-);
 
 const BudgetList = ({ onBudgetChange }) => {
     const [budgets, setBudgets] = useState([]);
@@ -26,7 +30,7 @@ const BudgetList = ({ onBudgetChange }) => {
     const [selectedYear, setSelectedYear] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
 
-    // Initialize filters with current month/year
+
     useEffect(() => {
         const now = new Date();
         const currentMonth = now.getMonth() + 1;
@@ -36,7 +40,7 @@ const BudgetList = ({ onBudgetChange }) => {
         setSelectedYear(currentYear.toString());
     }, []);
 
-    // Fetch budgets
+
     const fetchBudgets = async () => {
         try {
             setLoading(true);
@@ -65,7 +69,6 @@ const BudgetList = ({ onBudgetChange }) => {
         }
     };
 
-    // Fetch budgets when filters change
     useEffect(() => {
         if (selectedMonth && selectedYear) {
             fetchBudgets();
@@ -84,21 +87,21 @@ const BudgetList = ({ onBudgetChange }) => {
             const data = await response.json();
 
             if (data.success) {
-                // Refresh budgets after adding
+
                 await fetchBudgets();
                 if (onBudgetChange) onBudgetChange();
             } else {
-                // Throw error with backend message
+
                 throw new Error(data.error || 'Failed to add budget');
             }
         } catch (err) {
             console.error('Add budget error:', err);
-            // Re-throw with the specific error message for the dialog to handle
+
             throw new Error(err.message || 'Network error occurred');
         }
     };
 
-    // Handle update budget
+    // Handle update budget`
     const handleUpdateBudget = async (budgetId, updatedData) => {
         try {
             const response = await fetch(`/api/budgets/${budgetId}`, {
@@ -168,13 +171,13 @@ const BudgetList = ({ onBudgetChange }) => {
         setSelectedBudget(null);
     };
 
-    // Generate year options (current year ± 2 years)
+
     const generateYearOptions = () => {
         const years = [2025, 2026];
         return years;
     };
 
-    // Month options
+
     const monthOptions = [
         { value: '1', label: 'January' },
         { value: '2', label: 'February' },
@@ -198,51 +201,62 @@ const BudgetList = ({ onBudgetChange }) => {
         }).format(amount);
     };
     return (
-        <div className="relative">
-            {/* Filters */}
-            <div className="bg-white rounded-lg shadow-xs p-4 border border-gray-200">
+        <div className="mx-auto relative">
+            <div className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">Budgets</h1>
+                <p className="text-gray-600">Manage your category budgets</p>
+            </div>
+            <div className="bg-white rounded-md shadow-xs p-4 border border-gray-200">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Month Filter */}
+
+
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label htmlFor="month" className="mb-2 block text-sm font-medium">
                             Month
-                        </label>
-                        <select
+                        </Label>
+                        <Select
                             value={selectedMonth}
-                            onChange={(e) => setSelectedMonth(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            onValueChange={setSelectedMonth}
                         >
-                            {monthOptions.map(month => (
-                                <option key={month.value} value={month.value}>
-                                    {month.label}
-                                </option>
-                            ))}
-                        </select>
+                            <SelectTrigger id="month" className="w-full">
+                                <SelectValue placeholder="Select month" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {monthOptions.map((month) => (
+                                    <SelectItem key={month.value} value={month.value}>
+                                        {month.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
 
-                    {/* Year Filter */}
+                    {/* Year Selector */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Label htmlFor="year" className="mb-2 block text-sm font-medium">
                             Year
-                        </label>
-                        <select
+                        </Label>
+                        <Select
                             value={selectedYear}
-                            onChange={(e) => setSelectedYear(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            onValueChange={setSelectedYear}
                         >
-                            {generateYearOptions().map(year => (
-                                <option key={year} value={year.toString()}>
-                                    {year}
-                                </option>
-                            ))}
-                        </select>
+                            <SelectTrigger id="year" className="w-full">
+                                <SelectValue placeholder="Select year" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {generateYearOptions().map((year) => (
+                                    <SelectItem key={year} value={year.toString()}>
+                                        {year}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
-            </div>
 
-            {/* Header */}
+            </div>
             {loading ? (
-                <LoadingSpinner />
+                <Loader />
             ) : (
                 <div>
                     <div className="flex items-center justify-between my-6">
@@ -290,16 +304,16 @@ const BudgetList = ({ onBudgetChange }) => {
                         </div>
                     )}
 
-                    {/* Floating Action Button */}
-                    <button
-                        onClick={handleAddClick}
-                        className="fixed bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-200 z-50 group"
-                        aria-label="Add Budget"
-                    >
-                        <Plus size={24} className="group-hover:scale-110 transition-transform duration-200" />
-                    </button>
+                    <div className="fixed bottom-6 right-6">
+                        <button
+                            onClick={handleAddClick}
+                            className="bg-green-600 hover:bg-green-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-200 z-50 group"
+                            aria-label="Add Budget"
+                        >
+                            <Plus size={24} className="group-hover:scale-110 transition-transform duration-200" />
+                        </button>
+                    </div>
 
-                    {/* Dialogs */}
                     <UpdateBudgetDialog
                         isOpen={isUpdateDialogOpen}
                         budget={selectedBudget}
@@ -323,8 +337,9 @@ const BudgetList = ({ onBudgetChange }) => {
                     />
                 </div>
             )}
-        </div>
-    );
+
+
+        </div>);
 };
 
 export default BudgetList;

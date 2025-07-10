@@ -1,31 +1,29 @@
-import axios from 'axios';
+
+
 import React, { useState, useEffect } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const ExpensePieChart = ({ refreshFlag, refreshFlag2 }) => {
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
+import { Card, CardContent } from '@/components/ui/card';
+import axios from 'axios';
+
+
+
+
+
+
+const ExpensePieChart = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
 
-
-    const colors = [
-        '#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff00', '#0088fe',
-        '#ffbb28', '#ff8042', '#8dd1e1', '#d084d0', '#87d068', '#ffc0cb'
-    ];
-
     const fetchData = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_URL}/analytics/category-breakdown?type=expense`);
+            const response = await axios.get('api/analytics/category-breakdown?type=expense');
             const fetchedData = response.data.data;
-            console.log('Fetched Data:', fetchedData.length);
-            console.log('Fetched Data:', fetchedData);
-            if (fetchedData && fetchedData.length > 0) {
 
+            if (fetchedData && fetchedData.length > 0) {
                 const totalAmount = fetchedData.reduce((sum, item) => sum + item.amount, 0);
                 setTotal(totalAmount);
-
-                console.log('Total Amount:', totalAmount);
                 setData(fetchedData);
             }
             setLoading(false);
@@ -37,15 +35,18 @@ const ExpensePieChart = ({ refreshFlag, refreshFlag2 }) => {
 
     useEffect(() => {
         fetchData();
+    }, []);
 
-    }, [refreshFlag, refreshFlag2]); // Fetch data when component mounts or when refreshFlag changes
+    const colors = [
+        '#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff00', '#0088fe',
+        '#ffbb28', '#ff8042', '#8dd1e1', '#d084d0', '#87d068', '#ffc0cb'
+    ];
 
-
-    const CustomTooltip = ({ active, payload, label }) => {
+    const CustomTooltip = ({ active, payload }) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
             return (
-                <div className="bg-white p-3 border border-gray-300 rounded shadow-lg">
+                <div className="bg-white p-3 border border-gray-300 rounded-lg shadow-lg">
                     <p className="font-semibold text-gray-800">{data.category}</p>
                     <p className="text-blue-600">Amount: ₹{data.amount.toLocaleString()}</p>
                     <p className="text-green-600">Transactions: {data.count}</p>
@@ -69,7 +70,7 @@ const ExpensePieChart = ({ refreshFlag, refreshFlag2 }) => {
                 fill="white"
                 textAnchor={x > cx ? 'start' : 'end'}
                 dominantBaseline="central"
-                className="text-sm font-medium"
+                className="text-xs font-medium"
             >
                 {`${(percent * 100).toFixed(0)}%`}
             </text>
@@ -78,34 +79,28 @@ const ExpensePieChart = ({ refreshFlag, refreshFlag2 }) => {
 
     if (loading) {
         return (
-            <div className="w-full max-w-6xl mx-auto bg-white rounded-lg shadow-lg">
-                <div className="p-6 border-b border-gray-200">
-                    <h2 className="text-2xl font-bold text-center">Expense Categories</h2>
-                </div>
-                <div className="p-6">
-                    <div className="flex items-center justify-center h-96">
-                        <div className="text-lg text-gray-500">Loading chart data...</div>
+            <Card className="bg-white border border-gray-200 rounded-sm shadow-none">
+                <CardContent className="p-6">
+                    <div className="flex items-center justify-center h-72">
+                        <div className="text-gray-500">Loading chart data...</div>
                     </div>
-                </div>
-            </div>
+                </CardContent>
+            </Card>
         );
     }
 
     return (
-        <div className="w-full mx-auto bg-white rounded-md">
-            <div className="p-6 border-b border-gray-200">
-                <h2 className="text-2xl font-bold text-center text-gray-800">
-                    Expense Categories
-                </h2>
-                <p className="text-center text-gray-600 mt-2">
-                    Total Expenses: ₹{total.toLocaleString()}
-                </p>
-            </div>
+        <Card className="bg-white border border-gray-200 shadow-none rounded-sm">
+            <CardContent className="p-6">
+                <div className="mb-4">
+                    <h2 className="text-xl font-semibold text-gray-800 ">Category Expenses</h2>
 
-            <div className="p-6">
+                    <p className="text-sm text-gray-600">Total: ₹{total.toLocaleString()}</p>
+                </div>
+
                 <div className="flex items-center justify-center">
-                    <div className="flex-1 max-w-md">
-                        <div className="h-80">
+                    <div className="flex-1 max-w-xs">
+                        <div className="h-64">
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                     <Pie
@@ -114,7 +109,7 @@ const ExpensePieChart = ({ refreshFlag, refreshFlag2 }) => {
                                         cy="50%"
                                         labelLine={false}
                                         label={renderCustomizedLabel}
-                                        outerRadius={120}
+                                        outerRadius={93}
                                         fill="#8884d8"
                                         dataKey="amount"
                                     >
@@ -128,20 +123,18 @@ const ExpensePieChart = ({ refreshFlag, refreshFlag2 }) => {
                         </div>
                     </div>
 
-
-                    <div className="ml-8 flex-shrink-0">
-                        <h3 className="text-lg font-semibold mb-4 text-gray-800">Categories</h3>
-                        <div className="space-y-3">
+                    <div className="ml-6 flex-shrink-0">
+                        <div className="space-y-2">
                             {data.map((item, index) => (
                                 <div key={item.category} className="flex items-center">
                                     <div
-                                        className="w-4 h-4 rounded mr-3 flex-shrink-0"
+                                        className="w-3 h-3 rounded mr-2 flex-shrink-0"
                                         style={{ backgroundColor: colors[index % colors.length] }}
                                     ></div>
                                     <div className="flex-1">
-                                        <div className="text-sm font-medium text-gray-800">{item.category}</div>
+                                        <div className="text-xs font-medium text-gray-800">{item.category}</div>
                                         <div className="text-xs text-gray-600">
-                                            ₹{item.amount.toLocaleString()} ({item.percentage}%)
+                                            ₹{item.amount.toLocaleString()}
                                         </div>
                                     </div>
                                 </div>
@@ -149,8 +142,8 @@ const ExpensePieChart = ({ refreshFlag, refreshFlag2 }) => {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </CardContent>
+        </Card>
     );
 };
 

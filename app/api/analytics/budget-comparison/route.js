@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Budget from '@/models/Budget';
 import Transaction from '@/models/Transaction';
-
+// ---------------------------  Fetch budget comparison analytics -------------------------------
 export async function GET(request) {
   try {
     await connectDB();
@@ -11,10 +11,10 @@ export async function GET(request) {
     const month = parseInt(searchParams.get('month')) || new Date().getMonth() + 1;
     const year = parseInt(searchParams.get('year')) || new Date().getFullYear();
     
-    // Fetch budgets for the specified month/year
+    
     const budgets = await Budget.find({ month, year }).lean();
     
-    // Fetch actual expenses for the same period
+    
     const actualExpenses = await Transaction.aggregate([
       {
         $match: {
@@ -33,7 +33,7 @@ export async function GET(request) {
       }
     ]);
     
-    // Combine budget and actual data
+    
     const comparisonData = budgets.map(budget => {
       const actualData = actualExpenses.find(expense => expense._id === budget.category);
       const actualAmount = actualData ? actualData.actual : 0;
@@ -49,9 +49,8 @@ export async function GET(request) {
         status: remaining >= 0 ? 'under' : 'over'
       };
     });
-    
-    // Add categories with actual expenses but no budget
-    const categoriesWithoutBudget = actualExpenses.filter(expense => 
+
+    const categoriesWithoutBudget = actualExpenses.filter(expense =>
       !budgets.some(budget => budget.category === expense._id)
     );
     
