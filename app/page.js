@@ -10,8 +10,8 @@ export default function Dashboard() {
   return (
     <div className=" mx-auto space-y-6">
       <h2 className="text-2xl font-bold text-gray-800 mb-1">Dashboard</h2>
-       <p>Your financial overview at a glance.</p>
-  
+       <p className="text-gray-600">Your financial overview at a glance.</p>
+
       <DashboardSummary />
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
