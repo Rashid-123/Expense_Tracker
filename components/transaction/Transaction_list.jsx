@@ -61,7 +61,7 @@ const TransactionList = () => {
         setIsDeleteDialogOpen(true);
     };
 
-    // Fetch transactions with filters and pagination
+
     const fetchTransactions = async (page = 1, currentFilters = filters) => {
         setLoading(true);
         try {
@@ -80,7 +80,7 @@ const TransactionList = () => {
 
             const response = await axios.get(`api/transactions?${params}`);
 
-            // Access transactions and pagination data
+
             const { transactions, pagination } = response.data.data;
 
 
@@ -170,7 +170,7 @@ const TransactionList = () => {
     return (
         <div className="mx-auto">
             <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">Transactions</h1>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Transactions</h1>
                 <p className="text-gray-600">Manage your income and expenses</p>
             </div>
 
@@ -229,9 +229,7 @@ const TransactionList = () => {
                 {!loading && <p className="text-sm text-gray-600">
                     Showing {transactions.length} of {totalTransactions} transactions
                 </p>}
-                {/* {loading && (
-                    <div className="text-sm text-blue-600">Loading...</div>
-                )} */}
+
             </div>
 
 

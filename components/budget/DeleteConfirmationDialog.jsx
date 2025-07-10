@@ -1,7 +1,19 @@
+
+
 import React, { useState } from 'react';
-import { Button } from "../ui/button";
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from '@/components/ui/dialog';
+import { AlertTriangle } from 'lucide-react';
+
 const DeleteConfirmationDialog = ({ isOpen, budget, onDelete, onClose }) => {
     const [isDeleting, setIsDeleting] = useState(false);
+
     const categoryColors = {
         food: '#8884d8',
         transportation: '#82ca9d',
@@ -13,6 +25,7 @@ const DeleteConfirmationDialog = ({ isOpen, budget, onDelete, onClose }) => {
         education: '#d084d0',
         other: '#82d982'
     };
+
     const handleDelete = async () => {
         setIsDeleting(true);
         try {
@@ -25,22 +38,29 @@ const DeleteConfirmationDialog = ({ isOpen, budget, onDelete, onClose }) => {
         }
     };
 
-    if (!isOpen || !budget) return null;
+    if (!budget) return null;
 
     const categoryColor = categoryColors[budget.category] || '#666';
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-                <h2 className="text-xl font-bold mb-4 text-gray-800">Delete Budget</h2>
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                        <AlertTriangle className="h-5 w-5 text-red-500" />
+                        Delete Budget
+                    </DialogTitle>
+                </DialogHeader>
 
-                <div className="mb-6">
-                    <p className="text-gray-600 mb-4">Are you sure you want to delete this budget? This action cannot be undone.</p>
+                <div className="py-4">
+                    <p className="text-gray-600 mb-4">
+                        Are you sure you want to delete this budget? This action cannot be undone.
+                    </p>
 
-                    <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="bg-gray-50 p-4 rounded-lg border">
                         <div className="flex items-center mb-2">
                             <div
-                                className="w-4 h-4 rounded-full mr-2"
+                                className="w-4 h-4 rounded-full mr-2 border border-gray-200"
                                 style={{ backgroundColor: categoryColor }}
                             ></div>
                             <span className="font-medium text-gray-800">
@@ -51,12 +71,15 @@ const DeleteConfirmationDialog = ({ isOpen, budget, onDelete, onClose }) => {
                             ${budget.amount.toFixed(2)}
                         </p>
                         <p className="text-sm text-gray-600">
-                            {new Date(budget.year, budget.month - 1).toLocaleString('default', { month: 'long', year: 'numeric' })}
+                            {new Date(budget.year, budget.month - 1).toLocaleString('default', {
+                                month: 'long',
+                                year: 'numeric'
+                            })}
                         </p>
                     </div>
                 </div>
 
-                <div className="flex justify-end space-x-3">
+                <DialogFooter>
                     <Button
                         variant="outline"
                         onClick={onClose}
@@ -71,9 +94,9 @@ const DeleteConfirmationDialog = ({ isOpen, budget, onDelete, onClose }) => {
                     >
                         {isDeleting ? 'Deleting...' : 'Delete Budget'}
                     </Button>
-                </div>
-            </div>
-        </div>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 };
 

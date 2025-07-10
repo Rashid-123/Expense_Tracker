@@ -1,5 +1,24 @@
+
+
+
 import React, { useState, useEffect } from 'react';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 const UpdateBudgetDialog = ({ isOpen, budget, onUpdate, onClose }) => {
     const [formData, setFormData] = useState({
@@ -8,6 +27,7 @@ const UpdateBudgetDialog = ({ isOpen, budget, onUpdate, onClose }) => {
         month: '',
         year: ''
     });
+
     const categoryColors = {
         food: '#8884d8',
         transportation: '#82ca9d',
@@ -19,6 +39,7 @@ const UpdateBudgetDialog = ({ isOpen, budget, onUpdate, onClose }) => {
         education: '#d084d0',
         other: '#82d982'
     };
+
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -66,100 +87,107 @@ const UpdateBudgetDialog = ({ isOpen, budget, onUpdate, onClose }) => {
         }
     };
 
-    if (!isOpen) return null;
+    const getMonthName = (monthNumber) => {
+        return new Date(0, monthNumber - 1).toLocaleString('default', { month: 'long' });
+    };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-                <h2 className="text-xl font-bold mb-4 text-gray-800">Update Budget</h2>
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Update Budget</DialogTitle>
+                </DialogHeader>
 
-                <div className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                        <select
+                <div className="grid gap-4 py-4">
+                    <div className="grid gap-2">
+                        <Label htmlFor="category">Category</Label>
+                        <Select
                             value={formData.category}
-                            onChange={(e) => handleInputChange('category', e.target.value)}
-                            className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.category ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                            onValueChange={(value) => handleInputChange('category', value)}
                         >
-                            <option value="">Select Category</option>
-                            {Object.keys(categoryColors).map(cat => (
-                                <option key={cat} value={cat}>
-                                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                                </option>
-                            ))}
-                        </select>
-                        {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category}</p>}
+                            <SelectTrigger className={errors.category ? 'border-red-500' : ''}>
+                                <SelectValue placeholder="Select Category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {Object.keys(categoryColors).map(cat => (
+                                    <SelectItem key={cat} value={cat}>
+                                        {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        {errors.category && <p className="text-red-500 text-xs">{errors.category}</p>}
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
-                        <input
+                    <div className="grid gap-2">
+                        <Label htmlFor="amount">Amount</Label>
+                        <Input
+                            id="amount"
                             type="number"
                             step="0.01"
                             value={formData.amount}
                             onChange={(e) => handleInputChange('amount', parseFloat(e.target.value))}
-                            className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.amount ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                            className={errors.amount ? 'border-red-500' : ''}
                             placeholder="Enter amount"
                         />
-                        {errors.amount && <p className="text-red-500 text-xs mt-1">{errors.amount}</p>}
+                        {errors.amount && <p className="text-red-500 text-xs">{errors.amount}</p>}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
-                            <select
-                                value={formData.month}
-                                onChange={(e) => handleInputChange('month', parseInt(e.target.value))}
-                                className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.month ? 'border-red-500' : 'border-gray-300'
-                                    }`}
+                        <div className="grid gap-2">
+                            <Label htmlFor="month">Month</Label>
+                            <Select
+                                value={formData.month.toString()}
+                                onValueChange={(value) => handleInputChange('month', parseInt(value))}
                             >
-                                <option value="">Month</option>
-                                {Array.from({ length: 12 }, (_, i) => (
-                                    <option key={i + 1} value={i + 1}>
-                                        {new Date(0, i).toLocaleString('default', { month: 'long' })}
-                                    </option>
-                                ))}
-                            </select>
-                            {errors.month && <p className="text-red-500 text-xs mt-1">{errors.month}</p>}
+                                <SelectTrigger className={errors.month ? 'border-red-500' : ''}>
+                                    <SelectValue placeholder="Month" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {Array.from({ length: 12 }, (_, i) => (
+                                        <SelectItem key={i + 1} value={(i + 1).toString()}>
+                                            {getMonthName(i + 1)}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {errors.month && <p className="text-red-500 text-xs">{errors.month}</p>}
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
-                            <input
+                        <div className="grid gap-2">
+                            <Label htmlFor="year">Year</Label>
+                            <Input
+                                id="year"
                                 type="number"
                                 value={formData.year}
                                 onChange={(e) => handleInputChange('year', parseInt(e.target.value))}
-                                className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.year ? 'border-red-500' : 'border-gray-300'
-                                    }`}
+                                className={errors.year ? 'border-red-500' : ''}
                                 placeholder="Year"
                             />
-                            {errors.year && <p className="text-red-500 text-xs mt-1">{errors.year}</p>}
+                            {errors.year && <p className="text-red-500 text-xs">{errors.year}</p>}
                         </div>
                     </div>
-
-                    <div className="flex justify-end space-x-3 mt-6">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={onClose}
-                            disabled={isSubmitting}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            type="button"
-                            onClick={handleSubmit}
-                            disabled={isSubmitting}
-
-                        >
-                            {isSubmitting ? 'Updating...' : 'Update Budget'}
-                        </Button>
-                    </div>
                 </div>
-            </div>
-        </div>
+
+                <DialogFooter>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={onClose}
+                        disabled={isSubmitting}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        type="button"
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Updating...' : 'Update Budget'}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 };
 

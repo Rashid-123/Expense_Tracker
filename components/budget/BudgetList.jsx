@@ -203,7 +203,7 @@ const BudgetList = ({ onBudgetChange }) => {
     return (
         <div className="mx-auto relative">
             <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">Budgets</h1>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">Budgets</h1>
                 <p className="text-gray-600">Manage your category budgets</p>
             </div>
             <div className="bg-white rounded-md shadow-xs p-4 border border-gray-200">
@@ -231,7 +231,7 @@ const BudgetList = ({ onBudgetChange }) => {
                         </Select>
                     </div>
 
-                    {/* Year Selector */}
+
                     <div>
                         <Label htmlFor="year" className="mb-2 block text-sm font-medium">
                             Year
