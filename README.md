@@ -71,3 +71,22 @@ Open your browser and visit: [http://localhost:3000](http://localhost:3000)
 ## 📡 API Endpoints
 
 All API routes are built using **Next.js App Router** under `/app/api`.
+
+| Method | Endpoint                           | Description                 |
+| ------ |------------------------------------|-----------------------------|
+| GET    | `/api/transactions`                | Fetch all transactions      |
+| POST   | `/api/transactions`                | Add a new transaction       |
+| PUT    | `/api/transactions/:id`            | Update a transaction by ID  |
+| DELETE | `/api/transactions/:id`            | Delete a transaction by ID  |
+| GET    | `/api/budgets`                     | Fetch all budgets           |
+| POST   | `/api/budgets`                     | Add a new budget            |
+| PUT    | `/api/budgets/:id`                 | Update a budget by ID       |
+| DELETE | `/api/budgets/:id`                 | Delete a budget by ID       |
+| GET    | `/api/analytics/dashboard-summary` | monthly summary data        |
+| GET    | `/api/analytics/monthly-expenses`  | monthly expense data        |
+| GET    | `/api/analytics/budget-comparison` | budget vs actual comparison |
+| GET    | `/api/analytics/category-breakdown` | category wise expenses      |
+
+
+
+## Happy Coding ( waiting for your Response )
